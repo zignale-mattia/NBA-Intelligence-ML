@@ -35,7 +35,7 @@ See [Architecture](docs/ARCHITECTURE.md) for the stage-to-file map and important
 
 | Path | Purpose |
 | --- | --- |
-| `notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb` | Curated 13-cell Google Colab workflow; execution outputs removed |
+| `notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb` | Curated 14-cell Google Colab workflow; execution outputs removed |
 | `src/` | Extracted Colab-oriented stage references and a small, testable configuration helper |
 | `dashboard/STEP_24_Dashboard_V5.py` | Original V5 Gradio dashboard source |
 | `tests/` | Fast structural and configuration tests requiring no private NBA dataset |

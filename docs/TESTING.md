@@ -12,7 +12,7 @@ GitHub Actions runs the same command with Python 3.11. The tests cover:
 
 - Python AST parsing for all `src/*.py` modules and the dashboard source.
 - Python AST parsing for notebook code cells, ignoring notebook-only shell commands.
-- Presence of 13 curated cells, unique cell IDs and no saved execution outputs.
+- Presence of 14 curated cells, unique cell IDs and no saved execution outputs.
 - Data-directory selection precedence, database presence checks and optional environment override.
 - Repository Git index inspection to prevent adding raw database files or model binaries.
 

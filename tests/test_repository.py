@@ -20,7 +20,7 @@ class RepositoryTests(unittest.TestCase):
     def test_notebook_is_clean_and_syntactically_valid(self):
         notebook = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
         self.assertEqual(notebook["nbformat"], 4)
-        self.assertEqual(len(notebook["cells"]), 13)
+        self.assertEqual(len(notebook["cells"]), 14)
         seen = set()
         for index, cell in enumerate(notebook["cells"], 1):
             with self.subTest(cell=index):
@@ -46,6 +46,7 @@ class RepositoryTests(unittest.TestCase):
         self.assertIn('BASE_DIR', sources[2])
         self.assertIn('BASE_DIR', sources[11])
         self.assertIn('BASE_DIR', sources[12])
+        self.assertIn('BASE_DIR', sources[13])
 
     def test_no_data_or_models_tracked(self):
         files = subprocess.check_output(

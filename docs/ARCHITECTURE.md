@@ -15,10 +15,11 @@ The notebook is a curated collection of Colab stages. **Notebook cells are not i
 | 9 | Ensemble model training | Feature CSV and list | V3 trained models and held-out predictions |
 | 10 | Player forecast engine | V3 model artifact and history | V3 player forecast files |
 | 11 | Threshold probability engine | Held-out predictions + V3 forecasts | Estimated probabilities and interval exports |
-| 12 | Injury report ingestion | Live injury information + V3 forecasts | Availability files |
-| 13 | Contextual injury integration | Prior injury and contextual forecast files | Updated contextual outputs with backups |
+| 12 | Injury and lineup context | V3 forecasts, probabilities, SQLite and injury feeds | Contextual forecasts, lineups and teammate impact |
+| 13 | Injury report ingestion | Live injury information + V3 forecasts | Availability files |
+| 14 | Contextual injury integration | Prior injury and contextual forecast files | Updated contextual outputs with backups |
 
-The output of cell 13 also requires contextual forecast files produced by an **earlier injury/lineup development stage that is not distributed in the curated notebook**. Do not assume it can run directly after cell 12 on a fresh checkout. The `src/injury_lineup_reference.py` file is a Colab-oriented reference for that workflow, not a fully packaged standalone replacement.
+Cell 14 consumes contextual outputs from cell 12 and availability files from cell 13. Run these stages in order; live feed availability and output compatibility still require runtime verification.
 
 ## Data handling
 
