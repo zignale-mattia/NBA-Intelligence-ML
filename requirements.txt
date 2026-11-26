@@ -1,3 +1,4 @@
+# Notebook and dashboard dependencies (not a locked environment).
 numpy
 pandas
 scikit-learn
@@ -12,3 +13,8 @@ xgboost
 lightgbm
 beautifulsoup4
 pymupdf
+nba_api
+matplotlib
+tqdm
+ipython
+nbformat

@@ -1718,7 +1718,14 @@ Machine Learning · Predictive Analytics · Model Monitoring
 
 USERNAME = "admin"
 
-PASSWORD = secrets.token_urlsafe(18)
+# Use a private environment variable, or enter a password interactively.
+# Never write the password to notebook output or source control.
+from getpass import getpass
+PASSWORD = os.environ.get("NBA_DASHBOARD_PASSWORD") or getpass(
+    "Choose a dashboard password (input hidden): "
+)
+if not PASSWORD:
+    raise ValueError("A non-empty dashboard password is required.")
 
 print("\n" + "=" * 60)
 

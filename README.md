@@ -1,49 +1,89 @@
-# NBA Intelligence V6
+# NBA Intelligence — NBA Player Forecasting & Analytics
 
-NBA player forecasting, matchup analysis and probability estimation prototype, built with Python, ESPN-derived game and box-score data, scikit-learn ensemble models, SQLite and Gradio.
+**Research portfolio project** · Python · Machine Learning · ESPN-derived basketball data · Google Colab · Gradio
 
-> **Project status:** research prototype. Several components were developed and run in Google Colab. The end-to-end hourly update pipeline and some backtesting integrations have **not** passed a complete production validation. Dashboard sharing links are temporary and not included.
+This repository presents a source-code demonstration of an NBA data-science system. It collects game and player box scores, engineers pregame features, trains forecasting models and estimates probability thresholds. The original project was developed interactively in Google Colab. **This repository is not advertised as a reproducible one-click service or a validated production system.**
 
-## Features
-- ESPN historical NBA game and player box-score collection.
-- Player forecasts for **points (PTS), rebounds (REB), assists (AST), made three-pointers (3PM), and points+rebounds+assists (PRA)**.
-- Rolling statistics, home/away, opponent trends, rest days and player-form features.
-- Candidate Ridge, RandomForest, ExtraTrees, XGBoost and LightGBM regression models with evaluation by chronological partitions.
-- Empirical prediction intervals and threshold probabilities.
-- Injury/lineup context, injury-aware context integration.
-- Interactive Gradio dashboard (V5 source, V6 extension developed in notebook).
+## What the project does
 
-## Repository layout
-- `notebooks/`: focused Colab development notebook (13 essential stages), with outputs removed.
-- `src/`: original notebook source cells, separated by function for easier review. **These are Colab-oriented references, not guaranteed standalone CLI applications.**
-- `dashboard/`: original V5 Gradio source.
-- `docs/`: project notes and screenshots (add screenshots after removing private information).
+- **Data engineering:** ingest ESPN game schedules and player box scores into SQLite, with an incremental update stage.
+- **Exploratory analytics:** summarize player and team performance.
+- **Win predictions:** train and evaluate a team win classifier with chronological partitions.
+- **Player forecasting:** predict PTS, REB, AST, made three-pointers (3PM) and PRA using rolling history and contextual features.
+- **Model selection:** compare Ridge, Random Forest, ExtraTrees, XGBoost and LightGBM candidates, retaining training-time temporal evaluation.
+- **Probability estimates:** produce empirical threshold probabilities from historical prediction errors.
+- **Availability context:** incorporate injury-status information, with limitations on freshness and certainty.
+- **Dashboard:** V5 Gradio visualization source is included. Later dashboard experiments are **not** included as a deployable V6 application.
 
-## Quick start (Google Colab)
-1. Open `notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb` in Colab.
-2. Install dependencies from `requirements.txt` as appropriate for the active runtime.
-3. Mount your own Google Drive and configure `NBA_Data_Science` working directory. Many notebook cells contain Colab-specific paths.
-4. Collect your own data or provide your personal local SQLite database. **The database and pretrained model artifacts are intentionally not distributed.**
-5. Run the desired cells in dependency order. The notebook records iterative development and is not a one-click production deployment.
+## Architecture
 
-## ML and evaluation
-Models target numerical outputs; the Probability Engine estimates threshold event probabilities (e.g. P(PTS >= 25)) from historical forecast errors. Performance should be assessed against **pregame** predictions only, with chronological splits and chronological evaluation during training. Dedicated experimental backtesting, repair and recovery code is omitted from this release. An outcome matching one prediction does not validate the overall model.
+```mermaid
+flowchart TD
+    A[ESPN game and box-score feeds] --> B[(SQLite historical database)]
+    B --> C[Historical analytics and rolling features]
+    C --> D[Temporal ML training and model selection]
+    D --> E[Player and team forecasts]
+    E --> F[Threshold probability estimation]
+    G[NBA/ESPN injury information] --> H[Context integration]
+    F --> H
+    H --> I[Gradio dashboard V5]
+```
 
-## Privacy and data licensing
-This repository excludes raw NBA data, SQLite databases, model binaries, Colab-generated outputs, credentials and logs. Verify ESPN/NBA terms before redistributing any scraped or downloaded data. Do not commit `.env`, tokens, personal Drive paths containing sensitive details, or credential-bearing notebook outputs.
+See [Architecture](docs/ARCHITECTURE.md) for the stage-to-file map and important dependencies.
 
-## Limitations
-- Colab sessions and temporary Gradio public links are not always-on hosting.
-- Source code contains historical Google Drive paths that must be adapted.
-- Some feature pipelines rely on previous notebook state and are not independently packaged.
-- Injury data is informational, not guaranteed to reflect a player's official availability.
-- Probability calibration and automated refresh require further independent validation.
+## Repository structure
 
-## Technologies
-Python · pandas · NumPy · scikit-learn · SQLite · XGBoost · LightGBM · Plotly · Gradio · Google Colab
+| Path | Purpose |
+| --- | --- |
+| `notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb` | Curated 13-cell Google Colab workflow; execution outputs removed |
+| `src/` | Extracted Colab-oriented stage references and a small, testable configuration helper |
+| `dashboard/STEP_24_Dashboard_V5.py` | Original V5 Gradio dashboard source |
+| `tests/` | Fast structural and configuration tests requiring no private NBA dataset |
+| `.github/workflows/validate.yml` | Automated syntax, notebook and config checks on each push |
+| `docs/` | Architecture, validation scope and release checklist |
+
+**Important:** Files extracted under `src/` (apart from `project_config.py`) are **reference-stage scripts**, not independent CLI commands. Many assume Colab state, Drive data or artifacts produced by earlier stages.
+
+## Run in Google Colab
+
+1. Open `notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb` in Google Colab.
+2. Install the dependencies in `requirements.txt` in the Colab runtime. For example, after cloning this repository:
+
+   ```python
+   %pip install -r /content/NBA-Intelligence-ML/requirements.txt
+   ```
+
+3. Run **cell 1: Environment setup** before the remaining stages. It checks the `NBA_DATA_DIR` environment variable, looks for an existing NBA database in known Colab Drive mounts and otherwise mounts the standard Google Drive location.
+4. Use **your own** NBA data directory (default: `/content/drive/MyDrive/NBA_Data_Science`). You can override it with `NBA_DATA_DIR`; if overriding to a Drive directory, mount Drive first.
+5. Execute only the stages needed for your goal, in the documented order. Forecast and dashboard stages require data files and trained models generated by earlier stages. The public GitHub repository does **not** contain those artifacts.
+
+The notebook still uses external network APIs and was originally developed with specific data and model state. There is **no claim of a successful clean-room end-to-end execution**.
+
+## Dashboard access
+
+The included dashboard is the **V5 source**, intended for the original Colab environment and corresponding generated forecast files. Before launch, provide a password in the private runtime through `NBA_DASHBOARD_PASSWORD`, or enter a password at the hidden interactive prompt. No password should be committed or printed.
+
+The dashboard source currently requests a temporary Gradio public share link (`share=True`); the link may be reachable on the internet **even though the app requires login**. Do not run it with personal or licensed data you do not wish to expose, and do not treat it as a production security boundary.
+
+## Validation
+
+Automated offline checks can be run with no database or network access:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+These tests check Python source syntax, notebook syntax and output sanitation, the configurable data path and absence of tracked database/model binaries. **They do not measure predictive accuracy, run the ESPN pipeline or validate dashboard rendering.** See [Testing & limitations](docs/TESTING.md).
+
+## Data, privacy and limitations
+
+- No raw box scores, SQLite databases, exported CSV/Excel reports, pre-trained model binaries, private credentials or Colab execution outputs are distributed.
+- Before redistribution, review ESPN/NBA data-source terms and image rights.
+- Injury reports may be incomplete or stale. Probabilities are conditional model estimates, not guarantees.
+- Historical prediction performance must be evaluated using actual *pregame* forecasts and correctly separated chronological data. There are no independently verified accuracy metrics in this public release.
+- Package requirements are listed but not version-locked; a tested reproducible environment is still a future improvement.
+- This repository deliberately omits experimental backtesting scripts from the current tree. Earlier Git commits may still contain development versions.
 
 ## License
-No open-source license selected yet. All rights reserved unless the repository owner adds a license.
 
-### Scope of this release
-This release removes ad-hoc backtesting experiments, environment recovery cells, temporary error fixes and repeated exploratory notebook versions. It retains the training-time validation and prediction workflow. Scripts under src are extracted reference implementations from Colab and may need adaptation to run independently.
+No license has been selected. The code is viewable as a portfolio; public visibility **does not automatically grant permission to reuse it**.
