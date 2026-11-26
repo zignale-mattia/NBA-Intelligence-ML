@@ -10,11 +10,11 @@ NBA player forecasting, matchup analysis and probability estimation prototype, b
 - Rolling statistics, home/away, opponent trends, rest days and player-form features.
 - Candidate Ridge, RandomForest, ExtraTrees, XGBoost and LightGBM regression models with evaluation by chronological partitions.
 - Empirical prediction intervals and threshold probabilities.
-- Injury/lineup context, probabilistic backtesting and daily forecast-versus-actual reports.
+- Injury/lineup context, injury-aware context integration.
 - Interactive Gradio dashboard (V5 source, V6 extension developed in notebook).
 
 ## Repository layout
-- `notebooks/`: sanitized Colab development notebook, with outputs removed.
+- `notebooks/`: focused Colab development notebook (13 essential stages), with outputs removed.
 - `src/`: original notebook source cells, separated by function for easier review. **These are Colab-oriented references, not guaranteed standalone CLI applications.**
 - `dashboard/`: original V5 Gradio source.
 - `docs/`: project notes and screenshots (add screenshots after removing private information).
@@ -27,7 +27,7 @@ NBA player forecasting, matchup analysis and probability estimation prototype, b
 5. Run the desired cells in dependency order. The notebook records iterative development and is not a one-click production deployment.
 
 ## ML and evaluation
-Models target numerical outputs; the Probability Engine estimates threshold event probabilities (e.g. P(PTS >= 25)) from historical forecast errors. Performance should be assessed against **pregame** predictions only, with chronological splits and calibration reports. An outcome matching one prediction does not validate the overall model.
+Models target numerical outputs; the Probability Engine estimates threshold event probabilities (e.g. P(PTS >= 25)) from historical forecast errors. Performance should be assessed against **pregame** predictions only, with chronological splits and chronological evaluation during training. Dedicated experimental backtesting, repair and recovery code is omitted from this release. An outcome matching one prediction does not validate the overall model.
 
 ## Privacy and data licensing
 This repository excludes raw NBA data, SQLite databases, model binaries, Colab-generated outputs, credentials and logs. Verify ESPN/NBA terms before redistributing any scraped or downloaded data. Do not commit `.env`, tokens, personal Drive paths containing sensitive details, or credential-bearing notebook outputs.
@@ -44,3 +44,6 @@ Python · pandas · NumPy · scikit-learn · SQLite · XGBoost · LightGBM · Pl
 
 ## License
 No open-source license selected yet. All rights reserved unless the repository owner adds a license.
+
+### Scope of this release
+This release removes ad-hoc backtesting experiments, environment recovery cells, temporary error fixes and repeated exploratory notebook versions. It retains the training-time validation and prediction workflow. Scripts under src are extracted reference implementations from Colab and may need adaptation to run independently.
