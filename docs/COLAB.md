@@ -1,73 +1,79 @@
-# Colab guide: public demonstration versus full research notebook
+# NBA Intelligence — REAL NBA Google Colab guide
 
-## Fastest way for a recruiter
+## Launch with real ESPN game statistics
 
-[Open the **public interactive demo** in Colab](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Intelligence_Public_Demo.ipynb).
+[![Open real NBA demo in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Intelligence_Public_Demo.ipynb)
 
-1. Open the link in a **fresh Google Colab runtime**.
-2. Choose **Runtime > Run all** (or execute the three code cells in order).
-3. Allow Colab to install its demo-only dependencies; first launch may take a few minutes.
-4. If Colab asks for a Python restart after upgrading NumPy/Pandas, restart the
-   session and run the cells again. Colab package versions can change.
-5. Look for the generated temporary **Gradio share link** in the last cell and open it.
-6. Try the invented players, the statistic selector, opponent sliders and
-   test-set model comparison.
+1. Open the badge above using Google Colab.
+2. Verify the notebook title is **NBA_Intelligence_Public_Demo.ipynb**, NOT the
+   separate V4 research notebook.
+3. Choose **Runtime → Run all**. The installer fetches the latest GitHub
+   source and installs Gradio and scikit-learn.
+4. Restart the Python runtime and run the cells again if Colab prompts you
+   to do so after a NumPy/Pandas upgrade. This is common on first launch.
+5. The second code cell fetches real ESPN 2025-26 and 2026-27 regular-season
+   player game logs, stores a local temporary SQLite database, downloads
+   scheduled upcoming games from ESPN and trains the regression models.
+6. The third cell starts Gradio, which prints a temporary
+   `https://<random>.gradio.live` URL. Open the URL to view the real game
+   histories, source URLs, current scheduled matchups and ML predictions.
+   Keep Colab open while using the dashboard.
 
-**Privacy:** The entire public demo uses explicitly **synthetic, simulated data**.
-It is not a real NBA player forecast or live sports service. It uses no ESPN
-API, no API key, no private database, no existing ML model binaries, and no
-Google Drive. Generated SQLite data lives only inside the current Colab
-runtime at `/content/NBA_Intelligence_Demo/synthetic_nba_demo.sqlite`.
-This temporary file is not uploaded to GitHub.
+**No fabricated game values or players are used in this demo.** The historical
+statistics are actual reported played NBA games retrieved **at runtime**
+from ESPN. If ESPN is blocked, times out, or changes its undocumented JSON
+format, fetching can fail or yield incomplete data. The code reports errors
+rather than substituting synthetic statistics. At least five players and
+150 played games are required.
 
-**Public links:** The Gradio share link is temporary and may be accessible to
-anyone who knows it. It expires when the runtime terminates. The demonstration
-does not accept private file uploads. Avoid connecting private data or accounts.
+**What is being predicted?** PTS, REB, AST, made three-pointers (3PM), and
+PTS+REB+AST (PRA) for an NBA player's *next team fixture*. ESPN schedule
+information is used for the time, opponent, home/away status and rest days.
+If no actual upcoming team game is retrieved, the display explicitly labels
+the estimate as a hypothetical home/rest scenario. The model currently does
+**not** incorporate opponent defensive quality, player injuries or lineups.
+A listed team fixture does **not** establish a player's availability.
 
-**Evaluation:** The public demo uses a fixed-seed synthetic dataset and a
-small, transparent ridge regressor implemented with the Python standard
-library. Each player's supervised rows are divided chronologically into
-70% training, 15% validation and 15% testing after the ten-game feature
-warm-up. The test-set MAE is compared with a last-ten-games baseline.
-Validation residuals are used to display illustrative threshold estimates,
-which are **not validated real-world probabilities**. The demo does not
-claim the original advanced ensemble has been run or verified.
+**How the model works:** The public demo builds each prediction from only
+games *before* the corresponding game. Features include rolling last-5,
+last-10, and last-15 averages, minutes and prior trend, home status and days
+rest. It creates a *globally chronological NBA date* split (~70% train, 15%
+validation, 15% final test). Ridge, Random Forest and Extra Trees candidates
+are selected using validation MAE. The chosen candidate is refitted on
+train+validation and compared against a last-10-games baseline on the
+previously untouched test dates. If the model underperforms the baseline,
+the dashboard displays that result transparently.
 
-## Full NBA research pipeline (separate from the demo)
+**Probability estimate:** The threshold estimate is an empirical fraction
+of validation residuals. It is **not a formally calibrated probability**
+or a guarantee about a future game. Predictive results depend on the current
+data snapshot and may change when ESPN publishes additional game logs.
 
-[Open the **14-stage original research workflow** in Colab](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb).
+**Data privacy:** The temporary database is created at
+`/content/NBA_Real_Data/nba_public_real_espn.sqlite`. The public repository
+does not ship the author's personal database, trained models, credentials
+or output files. No Google Drive mount is used. A public Gradio share URL
+exists only while Colab is running, and should not be used to upload private
+files. ESPN sources and box-score links are visible in the app. Check terms
+of use before republishing raw datasets or third-party imagery.
 
-This notebook contains the ESPN ingestion, data engineering, ensemble
-training, injury/lineup context and forecast stages. **It is not a one-click
-demo:** it requires live external data retrieval, significant Colab runtime
-time, the appropriate stage order, and artifacts generated by earlier stages.
-It has not passed a clean-room end-to-end Colab validation.
+## Full original research workflow (separate)
 
-To run it without the author's Drive, initialize a disposable runtime folder
-*before* running its environment setup cell, for example:
+[Open the 14-stage research notebook](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb)
 
-```python
-import os
-from pathlib import Path
-data_dir = Path("/content/NBA_Public_Data")
-data_dir.mkdir(parents=True, exist_ok=True)
-os.environ["NBA_DATA_DIR"] = str(data_dir)
-```
+The full original notebook includes ESPN collection, advanced feature
+engineering, Ridge/Random Forest/ExtraTrees/XGBoost/LightGBM ensemble
+experiments, injury/lineup context and V3 probability engines. It requires
+running its stages in dependency order and is **not yet verified as a
+clean-room one-click workflow**. The compact, real-data Colab demo is an
+independent **newly trained** project version. It does not claim to execute
+the original complete V3 pipeline.
 
-The first Colab cell should install dependencies and initialize `BASE_DIR`;
-the historical collection stages create the SQLite tables as data is
-downloaded. Do not use **Run all** before inspecting the acquisition period
-and the stage prerequisites. The original dashboard V5 requires several
-generated CSV/model files; it is not part of the quick demo.
+## Test scope
 
-## Repeatable offline tests
-
-```bash
-python3 -m unittest discover -s tests -v
-```
-
-The offline suite runs without Gradio or an NBA database. It validates the
-simulation, SQLite isolation, chronological features, forecasting outputs,
-notebook structure and source syntax. It **does not** verify that an external
-Colab session, Gradio hosting, ESPN, or the original research pipeline runs
-successfully.
+Offline unit tests cover parser schema, source links, model construction,
+no feature use of a game's own target, temporal splitting, prediction
+bounds and database isolation. Real ESPN acquisition and basic forecasting
+were also smoke-tested on the owner's Mac. A fresh Colab browser/Gradio
+launch should be verified separately: Google Colab runtime versions and
+ESPN service behavior may change after publication.

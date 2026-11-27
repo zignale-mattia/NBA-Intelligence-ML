@@ -43,13 +43,8 @@ The original reference scripts may still contain Colab-specific paths or assume 
 - Probabilities should be validated against timestamped pregame predictions, with data leakage checks.
 - No end-to-end, live ESPN, or dashboard browser test was performed during this repository cleanup.
 
-## Public recruiter demo (separate architecture)
+## Public recruiter demo (separate real-data architecture)
 
-The [Colab demo](COLAB.md) does **not** use any real basketball data. Its
-flow is: seeded simulated match logs → temporary SQLite table → last-five/ten
-pregame features → standard-library ridge regression → per-player temporal
-train/validation/test partitions → synthetic threshold estimates → Gradio.
-The code lives in `demo/public_demo.py`, `demo/app.py` and
-`notebooks/NBA_Intelligence_Public_Demo.ipynb`. The original research
-pipeline above remains unchanged, apart from allowing the V5 dashboard to
-respect an explicit `NBA_DATA_DIR` before checking Drive mounts.
+The [Google Colab demo](COLAB.md) uses **actual ESPN regular-season player game logs**, not the owner's private original database. Its flow is: live ESPN athlete game-log retrieval → temporary SQLite → strictly prior-game rolling features → globally chronological train/validation/test → Ridge / Random Forest / Extra Trees validation-based model selection → real-data player forecasts and source-linked history → Gradio. Verified upcoming ESPN fixtures inform home/away and rest scenarios.
+
+Implementation: `demo/real_espn.py`, `demo/real_models.py`, `demo/real_app.py` and `notebooks/NBA_Intelligence_Public_Demo.ipynb`. It is intentionally separate from the original research V3 ensemble and does not claim to have reproduced that full pipeline. ESPN service availability and model quality are not guaranteed.

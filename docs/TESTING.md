@@ -15,19 +15,20 @@ GitHub Actions runs the same command with Python 3.11. The tests cover:
 - Presence of 14 curated cells, unique cell IDs and no saved execution outputs.
 - Data-directory selection precedence, database presence checks and optional environment override.
 - Repository Git index inspection to prevent adding raw database files or model binaries.
-- Synthetic-only demo generation, independent SQLite tables, reproducibility, pregame-only feature construction and chronological partitions.
-- Demo model output checks, comparison against historical baseline, probability monotonicity and input validation.
-- Public Colab notebook syntax, outputs, README launch badge and absence of Drive mounting.
+- Real ESPN gamelog schema parsing with mocked provider responses and verifiable ESPN source links.
+- Strict separation of temporary real-data SQLite from the original database.
+- Prior-game feature construction, leakage checks, chronological partitions, forecasting output and input validation.
+- Public real-data Colab notebook syntax, outputs, README launch badge and absence of Drive mounting.
 
 These are **static and local-unit checks**. Passing them does not guarantee that network calls succeed, model files are compatible, data is current, or a full dashboard launches.
 
-The demo-only core is exercised locally without external Python packages. Its optional Gradio front end still needs an actual Google Colab smoke test.
+The ESPN parser and fallback forecasting core are tested locally with standard library mocks. A real ESPN integration test retrieved real game logs and checked out-of-sample MAE; the new Gradio browser front end still needs an actual Google Colab smoke test.
 
 ## Tests not completed here
 
 | Check | Status |
 | --- | --- |
-| Public synthetic Colab demo installation, Gradio browser and share link | Not verified |
+| Public REAL ESPN Colab demo installation, Gradio browser and share link | Not verified |
 | Full real-data Colab pipeline from clean runtime | Not verified |
 | ESPN data refresh and API shape compatibility | Not verified |
 | Full SQLite schema / integrity check against user's private database | Not performed |

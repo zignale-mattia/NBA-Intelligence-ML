@@ -1,6 +1,6 @@
-# Only the public Gradio demo needs these packages.
-# Pin Colab-compatible data libraries to avoid pandas 3 / NumPy 2.5 conflicts.
-# The demo ML core itself uses Python standard library only.
+# Real NBA data demo on Google Colab (not the original V3 environment).
+# Keep Pandas/NumPy in Colab-compatible ranges; avoid -U blanket upgrades.
 numpy==2.2.6
 pandas==2.2.3
+scikit-learn>=1.5,<1.8
 gradio>=5.49,<6

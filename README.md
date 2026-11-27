@@ -1,16 +1,14 @@
 # NBA Intelligence — NBA Player Forecasting & Analytics
 
+## Open the REAL NBA analytics demo on Google Colab
 
-## Try the public interactive Colab demo
+[![Run REAL NBA Data Demo on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Intelligence_Public_Demo.ipynb)
 
-[![Open Public Demo in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Intelligence_Public_Demo.ipynb)
+**For recruiters:** select the badge, open the Colab notebook, then click **Runtime → Run all**. It downloads **real ESPN player game logs** from the 2025-26 and 2026-27 regular seasons, creates a temporary independent SQLite database, trains and evaluates Ridge, Random Forest and Extra Trees forecasting models, retrieves actual upcoming ESPN team fixtures and launches a Gradio dashboard with real players, observed statistics and source links.
 
-**One-click Colab notebook for recruiters:** click the badge, then **Runtime → Run all** to create a reproducible synthetic basketball database, train a transparent ridge-regression forecasting model, inspect chronological holdout results and launch a Gradio interface. No Google Drive, private credentials or original database are required. The generated temporary Gradio share link works while the Colab session remains active.
+**No synthetic NBA game data or invented player performances are used in this demo.** No personal Google Drive, credentials, private database or previously trained model files are required. A network connection to ESPN is required, and the temporary Gradio share link lasts only while Colab is running. Model forecasts and threshold estimates are uncertain; fixture listings do not guarantee that a player will participate. See [Colab setup and limitations](docs/COLAB.md).
 
-**Critical distinction:** the quick demo contains **fabricated players and simulated game statistics only**. It does **not** produce real NBA forecasts or validate the original research models. For detailed prerequisites and privacy details, read [the Colab guide](docs/COLAB.md).
-
-[Open the full 14-stage research notebook in Colab](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb) — advanced, requires real-data collection and stage-by-stage execution, not one-click.
-
+[Open the separate original 14-stage research notebook](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb). The full notebook has broader features and is **not** validated as a one-click clean-room workflow.
 
 **Research portfolio project** · Python · Machine Learning · ESPN-derived basketball data · Google Colab · Gradio
 
@@ -47,8 +45,8 @@ See [Architecture](docs/ARCHITECTURE.md) for the stage-to-file map and important
 
 | Path | Purpose |
 | --- | --- |
-| `notebooks/NBA_Intelligence_Public_Demo.ipynb` | Standalone public Colab demo (synthetic-only), clickable badge above |
-| `demo/` | Synthetic game generation, independent SQLite, ridge training, Gradio UI and notebook generator |
+| `notebooks/NBA_Intelligence_Public_Demo.ipynb` | Real ESPN public Colab analytics & forecasting demo, clickable badge above |
+| `demo/` | Real ESPN ingestion, independent SQLite, chronological ML models, Gradio UI and notebook generator |
 | `notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb` | Curated 14-cell research workflow; execution outputs removed |
 | `src/` | Extracted Colab-oriented stage references and a small, testable configuration helper |
 | `dashboard/STEP_24_Dashboard_V5.py` | Original V5 Gradio dashboard source |
@@ -91,7 +89,7 @@ These tests check Python source syntax, notebook syntax and output sanitation, t
 
 ## Data, privacy and limitations
 
-- No raw real-data box scores, SQLite databases, exported CSV/Excel reports, pre-trained model binaries, private credentials or Colab execution outputs are distributed. The public demo generates its own temporary synthetic-only SQLite data.
+- No raw box scores, SQLite databases, exported CSV/Excel reports, pre-trained model binaries, private credentials or Colab execution outputs are distributed. The demo fetches real NBA game logs from ESPN at runtime and generates its own temporary SQLite database.
 - Before redistribution, review ESPN/NBA data-source terms and image rights.
 - Injury reports may be incomplete or stale. Probabilities are conditional model estimates, not guarantees.
 - Historical prediction performance must be evaluated using actual *pregame* forecasts and correctly separated chronological data. There are no independently verified accuracy metrics in this public release.

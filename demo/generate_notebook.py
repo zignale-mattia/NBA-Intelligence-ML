@@ -1,118 +1,148 @@
-"""Regenerate the checked-in Colab portfolio notebook with no execution outputs."""
+"""Rebuild the public Colab notebook for *real ESPN games only*."""
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "notebooks/NBA_Intelligence_Public_Demo.ipynb"
+TARGET = ROOT / "notebooks/NBA_Intelligence_Public_Demo.ipynb"
 
 
-def markdown(cell_id: str, source: str):
-    return {
-        "cell_type": "markdown",
-        "id": cell_id,
-        "metadata": {},
+def cell(kind, name, source):
+    output = {
+        "cell_type": kind, "id": name, "metadata": {},
         "source": source.splitlines(keepends=True),
     }
-
-
-def code(cell_id: str, source: str):
-    return {
-        "cell_type": "code",
-        "id": cell_id,
-        "metadata": {},
-        "execution_count": None,
-        "outputs": [],
-        "source": source.splitlines(keepends=True),
-    }
+    if kind == "code":
+        output["execution_count"] = None
+        output["outputs"] = []
+    return output
 
 
 cells = [
-    markdown("welcome", """# NBA Intelligence — Interactive Colab Portfolio Demo
+    cell("markdown", "intro", """# NBA Intelligence — REAL NBA Stats & ML Forecasts
 
-**⚠️ SYNTHETIC DATA ONLY. No real NBA player predictions.**
+**LIVE ESPN DATA ACQUISITION · VERIFIED NBA PLAYERS · TRAINING ON REAL GAMES**
 
-This notebook showcases a self-contained NBA-style data science pipeline:
-reproducible simulated box scores → temporary SQLite → leakage-aware pregame
-features → regularized linear regression → chronological holdout metrics →
-threshold estimates → interactive Gradio dashboard.
+This notebook gets the **actual 2025-26 and 2026-27 regular-season game
+logs** of selected NBA players from the public ESPN athlete JSON API, creates
+a **temporary isolated SQLite database** in Colab, trains and compares
+**Ridge / Random Forest / Extra Trees** models chronologically, and launches
+an interactive Gradio dashboard showing actual box scores, ESPN source links,
+model accuracy, next scheduled ESPN matchups and educational forecasts.
 
-- **No access** to the author's personal Google Drive, private SQLite database,
-  API keys, account credentials, or pre-trained models.
-- **No live ESPN/NBA requests** in this public demo. All game values are invented
-  and labeled as such.
-- The more advanced **real-data research notebook** remains available separately
-  in the same public repository. It requires collecting data and producing its
-  own intermediate artifacts before forecasting.
-- The optional **Gradio share link is publicly reachable** and expires with the
-  Colab runtime. Do not upload private files to this demonstration.
+**No synthetic/fabricated player data.** No private Google Drive, author's
+database, API keys or credentials needed. **ESPN Internet access is
+required**. If ESPN is unavailable, the notebook stops rather than making
+up statistics.
 
-**Usage:** In a clean Colab runtime, click **Runtime → Run all**. The first cell
-installs dependencies. If Colab requests a runtime restart because NumPy/Pandas
-changed, restart the session and select Run all once again.
+- These are real historical observations and newly trained **estimate**
+  models, not guarantees of future performance.
+- Fixtures are retrieved from the ESPN scoreboard. A scheduled team game is
+  **not confirmation a player will play**. The public model does *not*
+  incorporate injury reports, opponent defensive ratings or official lineups.
+- Model validation uses globally chronological game-date splits; the final
+  test period is excluded from model selection. MAE and baseline performance
+  are displayed even if the new model performs worse.
+- This is a **portable public real-data workflow**. The original advanced
+  14-stage research notebook is preserved separately; its V3 ensemble and
+  full injury-aware dashboard are **not** claimed to run here.
+- Gradio's temporary share link can be accessed by anyone who has it; the
+  underlying data consists solely of public ESPN data. No private files
+  should be uploaded.
+
+**How to run:** In Google Colab, select **Runtime → Run all**. If a package
+upgrade requests a runtime restart, restart and select Run all again. Allow
+time for actual ESPN requests and model training. The final cell prints
+your temporary Gradio public URL.
 """),
-    code("setup", """# 1/3 — Clone the public source and install the isolated demo requirements.
-import subprocess
+    cell("code", "install", """# 1/3 — Install the real-data demo from the latest public GitHub main.
 import sys
+import subprocess
 from pathlib import Path
 
 REPO = Path("/content/NBA-Intelligence-ML")
+REPO_URL = "https://github.com/zignale-mattia/NBA-Intelligence-ML.git"
+
 if not REPO.exists():
     subprocess.run(
-        ["git", "clone", "--depth", "1",
-         "https://github.com/zignale-mattia/NBA-Intelligence-ML.git",
-         str(REPO)],
+        ["git", "clone", "--depth", "1", REPO_URL, str(REPO)],
+        check=True,
+    )
+else:
+    # Reuse only a valid checkout; never fetch secrets or personal Drive files.
+    subprocess.run(
+        ["git", "-C", str(REPO), "pull", "--ff-only"],
         check=True,
     )
 
 requirements = REPO / "demo/requirements-colab.txt"
 if not requirements.is_file():
-    raise FileNotFoundError(f"Demo requirements missing: {requirements}")
+    raise FileNotFoundError(f"Requirements missing: {requirements}")
 
 subprocess.run(
-    [sys.executable, "-m", "pip", "install", "-q", "-r",
-     str(requirements)],
+    [sys.executable, "-m", "pip", "install",
+     "-q", "-r", str(requirements)],
     check=True,
 )
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
-print("Source ready:", REPO)
-print("Dependencies installed. If Colab requests a restart, restart and Run all.")
-"""),
-    code("data-and-models", """# 2/3 — All generated records are simulated; the SQLite file stays in /content.
-from demo.public_demo import create_demo, forecast
 
-state = create_demo("/content/NBA_Intelligence_Demo")
-print("SYNTHETIC-ONLY DATASET — NOT REAL NBA DATA")
-print("Simulation seed:", state["seed"])
-print("Invented game logs:", len(state["games"]))
-print("Temporary SQLite database:", state["database_path"])
-print("\\nChronological test-set mean absolute errors (synthetic only):")
-for stat, metrics in state["models"].items():
+print("GitHub source ready:", REPO)
+print("Dependencies installed. Restart Colab if package changes require it.")
+"""),
+    cell("code", "fetch-and-train", """# 2/3 — REAL played NBA games from ESPN; new temporary SQLite and trained ML.
+from demo.real_espn import prepare_data, upcoming_matchups
+from demo.real_models import train_state
+
+data = prepare_data("/content/NBA_Real_Data")
+state = train_state(data, advanced=True)
+
+try:
+    state["upcoming"] = upcoming_matchups(state["games"], days=9)
+except Exception as exc:
+    state["upcoming"] = {}
+    print("ESPN future schedule temporarily unavailable:", exc)
+
+print("=" * 66)
+print("REAL ESPN NBA GAME DATA - NO SIMULATED RECORDS")
+print("Data fetched at:", state["as_of_utc"])
+print("NBA players:", len(state["histories"]))
+print("Real game records:", len(state["games"]))
+print("Temporary SQLite:", state["db_path"])
+print("Upcoming verified team fixtures:", len(state["upcoming"]))
+if state["failures"]:
+    print("ESPN request warnings:", len(state["failures"]))
+    for warning in state["failures"][:3]:
+        print("  ", warning)
+
+print("\\nOUT-OF-SAMPLE TEST RESULTS (OBSERVED NBA STATISTICS)")
+for stat, result in state["models"].items():
     print(
-        f"  {stat:>3}: Ridge MAE {metrics['test_mae']:.2f} | "
-        f"last-10 baseline MAE {metrics['baseline_mae']:.2f} | "
-        f"test samples {metrics['test_n']}"
+        f"{stat:>3}: {result['selected_model']:<15} "
+        f"MAE {result['test_mae']:.2f} "
+        f"vs last-10 baseline {result['baseline_test_mae']:.2f} "
+        f"(test {result['n_test']} games)"
     )
 """),
-    code("gradio-dashboard", """# 3/3 — Launch interactive public demo; no Google Drive or personal data.
-from demo.app import make_app
+    cell("code", "launch", """# 3/3 — Gradio user interface with REAL ESPN observations and data provenance.
+from demo.real_app import make_real_app
 
-dashboard = make_app(state)
-dashboard.launch(share=True, inline=False, show_error=True)
-print("Only simulated data is exposed. Close or disconnect Colab to end the demo.")
+app = make_real_app(state)
+app.launch(share=True, inline=False, show_error=True)
+print("The temporary dashboard URL works while this Colab session is running.")
 """),
 ]
-notebook = {
-    "nbformat": 4,
-    "nbformat_minor": 5,
+nb = {
+    "nbformat": 4, "nbformat_minor": 5,
     "metadata": {
         "colab": {"provenance": []},
-        "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
+        "kernelspec": {
+            "display_name": "Python 3", "language": "python", "name": "python3"
+        },
         "language_info": {"name": "python"},
     },
     "cells": cells,
 }
-OUTPUT.write_text(json.dumps(notebook, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-print("Wrote", OUTPUT)
+TARGET.write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n")
+print("Saved", TARGET)
