@@ -28,14 +28,18 @@ This notebook gets the **actual 2025-26 and 2026-27 regular-season game
 logs** of selected NBA players from the public ESPN athlete JSON API, creates
 a **temporary isolated SQLite database** in Colab, trains and compares
 **Ridge / Random Forest / Extra Trees** models chronologically, and launches
-an interactive Gradio dashboard showing actual box scores, ESPN source links,
-model accuracy, next scheduled ESPN matchups and educational forecasts.
+a full nine-section interactive Gradio research terminal, including league-wide
+ESPN game box scores, 30-team snapshots, hundreds of real NBA athletes,
+player scouting, peer comparisons, league leaders, model validation,
+source-linked game histories and next-fixture forecasts.
 
 **No synthetic/fabricated player data.** No private Google Drive, author's
 database, API keys or credentials needed. **ESPN Internet access is
 required**. If ESPN is unavailable, the notebook stops rather than making
 up statistics.
 
+- The league explorer retrieves up to 180 recent completed NBA games and
+  thousands of actual player performances; sample sizes vary by date.
 - These are real historical observations and newly trained **estimate**
   models, not guarantees of future performance.
 - Fixtures are retrieved from the ESPN scoreboard. A scheduled team game is
@@ -94,9 +98,17 @@ print("Dependencies installed. Restart Colab if package changes require it.")
     cell("code", "fetch-and-train", """# 2/3 — REAL played NBA games from ESPN; new temporary SQLite and trained ML.
 from demo.real_espn import prepare_data, upcoming_matchups
 from demo.real_models import train_state
+from demo.league_explorer import build_league_explorer, persist_league_sqlite
 
 data = prepare_data("/content/NBA_Real_Data")
 state = train_state(data, advanced=True)
+
+# Expand the recruiter view beyond 14 modeled athletes: collect actual
+# completed NBA games and all participant box scores from public ESPN.
+state["league"] = build_league_explorer(days=42, max_games=180)
+state["league"]["db_path"] = persist_league_sqlite(
+    state["league"], "/content/NBA_Real_Data"
+)
 
 try:
     state["upcoming"] = upcoming_matchups(state["games"], days=9)
@@ -111,6 +123,11 @@ print("NBA players:", len(state["histories"]))
 print("Real game records:", len(state["games"]))
 print("Temporary SQLite:", state["db_path"])
 print("Upcoming verified team fixtures:", len(state["upcoming"]))
+print("REAL league games:", len(state["league"]["matches"]))
+print("REAL league player boxscores:", len(state["league"]["rows"]))
+print("Unique NBA athletes:", state["league"]["players"])
+print("NBA teams:", state["league"]["teams"])
+print("League SQLite:", state["league"]["db_path"])
 if state["failures"]:
     print("ESPN request warnings:", len(state["failures"]))
     for warning in state["failures"][:3]:

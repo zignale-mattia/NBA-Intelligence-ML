@@ -48,3 +48,25 @@ The original reference scripts may still contain Colab-specific paths or assume 
 The [Google Colab demo](COLAB.md) uses **actual ESPN regular-season player game logs**, not the owner's private original database. Its flow is: live ESPN athlete game-log retrieval → temporary SQLite → strictly prior-game rolling features → globally chronological train/validation/test → Ridge / Random Forest / Extra Trees validation-based model selection → real-data player forecasts and source-linked history → Gradio. Verified upcoming ESPN fixtures inform home/away and rest scenarios.
 
 Implementation: `demo/real_espn.py`, `demo/real_models.py`, `demo/real_app.py` and `notebooks/NBA_Intelligence_Public_Demo.ipynb`. It is intentionally separate from the original research V3 ensemble and does not claim to have reproduced that full pipeline. ESPN service availability and model quality are not guaranteed.
+
+## New expanded ESPN league analytics source
+
+The public Colab notebook now runs **two real-data branches**. First, athlete
+gamelogs across two NBA seasons provide approximately 14 selected players'
+rolling histories for Ridge, Random Forest and Extra Trees experiments.
+Second, a bounded recent-scoreboard acquisition collects up to 180 completed
+regular-season NBA fixtures, retrieves game-summary player box scores for
+both teams, and persists a separate disposable SQLite league database.
+
+League-wide observations drive nine Gradio / Plotly sections: overview,
+source-linked NBA game center, searchable player histories, comparison,
+leaderboards, team-level sample performance, data explorer, forecasts
+and model audit. Cross-source overlapping athlete/game IDs are deduplicated
+in the UI; the original historical database and V3 research models are not
+published or overwritten. ESPN fixture listings remain separate from actual
+athlete availability confirmation.
+
+The main implementation lives in demo/league_explorer.py,
+demo/analytics_views.py, demo/portfolio_charts.py, demo/portfolio_theme.css
+and demo/real_app.py. The original research pipeline and original V5
+dashboard remain separate.

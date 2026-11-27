@@ -22,7 +22,7 @@ GitHub Actions runs the same command with Python 3.11. The tests cover:
 
 These are **static and local-unit checks**. Passing them does not guarantee that network calls succeed, model files are compatible, data is current, or a full dashboard launches.
 
-The ESPN parser and fallback forecasting core are tested locally with standard library mocks. A real ESPN integration test retrieved real game logs and checked out-of-sample MAE; the new Gradio browser front end still needs an actual Google Colab smoke test.
+The ESPN parser and fallback forecasting core are tested locally with standard library mocks. A real ESPN integration test retrieved real game logs and checked out-of-sample MAE; the new nine-tab Gradio browser front end was built and rendered locally in Safari using real ESPN observations. Its new Colab public share link still needs a fresh-runtime smoke test.
 
 ## Tests not completed here
 
@@ -30,12 +30,12 @@ The ESPN parser and fallback forecasting core are tested locally with standard l
 | --- | --- |
 | Public REAL ESPN Colab demo installation, Gradio browser and share link | Not verified |
 | Full real-data Colab pipeline from clean runtime | Not verified |
-| ESPN data refresh and API shape compatibility | Not verified |
+| ESPN API behavior and data refresh on 2026-11-27 | Verified live, not guaranteed for later dates |
 | Full SQLite schema / integrity check against user's private database | Not performed |
-| ML retraining and accuracy metrics from held-out dates | Not verified |
+| Public demo ML training and held-out MAE versus baseline | Checked locally on actual ESPN athlete histories |
 | Prediction-time leakage and calibration validation | Not independently verified |
 | Injury data freshness and lineage validation | Not verified |
-| Gradio dashboard browser / authentication test | Not verified |
+| Public dashboard local browser | HTTP 200 and Safari visual rendering checked; new Colab shared link remains untested |
 | Scheduled update pipeline reliability | Not verified |
 
 ## Next validation milestone
@@ -43,3 +43,20 @@ The ESPN parser and fallback forecasting core are tested locally with standard l
 Use a **copy** of the original data directory, not the only copy. Execute setup, collection, feature creation and a fresh model train in a new Colab runtime. Record sample counts, temporal splits, MAE, baseline MAE, data timestamps and forecasts. Separately test the dashboard and availability integrations. Do not publish any private datasets, raw logs or user credentials.
 
 The current tree omits ad hoc experimental backtest scripts. The trained-model validation portions remain, since those are necessary to assess predictive quality.
+
+## Extended analytics dashboard test evidence
+
+On November 27, 2026, an expanded ESPN integration run downloaded **180
+completed regular-season NBA games and 3,993 real player lines for 460
+athletes and all 30 teams**, with no failed source requests. The temporary
+SQLite database was reopened and row counts matched ESPN acquisition.
+Gradio 5.50.0 was locally installed in an isolated Python 3.11 environment,
+the new dashboard with 125 components and eight event callbacks was
+constructed successfully, the local HTTP endpoint returned 200, and the
+page rendered in Safari.
+
+Additional offline tests cover regular-season filtering, actual ESPN
+game-summary athlete parsing, shot attempts, team score reconstruction,
+sample rankings, database isolation, and HTML escaping of untrusted strings.
+This does not establish uninterrupted ESPN availability or a successful
+deployment in a brand-new Google Colab runtime.

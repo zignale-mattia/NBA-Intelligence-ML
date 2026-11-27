@@ -1,18 +1,38 @@
-# NBA Intelligence — NBA Player Forecasting & Analytics
+# NBA Intelligence — Real NBA Analytics & Forecast Studio
 
 ## Open the REAL NBA analytics demo on Google Colab
 
 [![Run REAL NBA Data Demo on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Intelligence_Public_Demo.ipynb)
 
-**For recruiters:** select the badge, open the Colab notebook, then click **Runtime → Run all**. It downloads **real ESPN player game logs** from the 2025-26 and 2026-27 regular seasons, creates a temporary independent SQLite database, trains and evaluates Ridge, Random Forest and Extra Trees forecasting models, retrieves actual upcoming ESPN team fixtures and launches a Gradio dashboard with real players, observed statistics and source links.
+**For recruiters:** select the badge, open the Colab notebook, then click **Runtime → Run all**. It downloads **real ESPN player logs for 14 modeled athletes plus up to 180 recent completed NBA games and all participant box scores**, creates two isolated SQLite databases, trains and evaluates Ridge, Random Forest and Extra Trees forecasting models, retrieves actual upcoming ESPN team fixtures and launches a Gradio dashboard with real players, observed statistics and source links.
 
 **No synthetic NBA game data or invented player performances are used in this demo.** No personal Google Drive, credentials, private database or previously trained model files are required. A network connection to ESPN is required, and the temporary Gradio share link lasts only while Colab is running. Model forecasts and threshold estimates are uncertain; fixture listings do not guarantee that a player will participate. See [Colab setup and limitations](docs/COLAB.md).
 
 [Open the separate original 14-stage research notebook](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb). The full notebook has broader features and is **not** validated as a one-click clean-room workflow.
 
+## Portfolio dashboard — 9 professional research sections
+
+**Live ESPN integration test, 27 November 2026:** **180 real completed games, 3,993 player performances, 460 NBA athletes, and all 30 teams**. Zero failed ESPN requests in this test. Counts vary as the rolling NBA season window changes. Only official regular-season fixtures are included; the tables are not full-season standings.
+
+| Dashboard section | What the recruiter can explore |
+| --- | --- |
+| **Overview** | NBA coverage KPIs, interactive scoring charts, team win percentages, real results and recent player box scores |
+| **Forecast Studio** | Real-data ML estimates for PTS, REB, AST, 3PM, PRA; source-linked fixtures, actual player trends, last-10/20 form and thresholds |
+| **Player Intelligence** | Search hundreds of players, 5/10/20/50-game histories, trends, distributions, shooting breakdown and ESPN citations |
+| **Compare Players** | Head-to-head time series, averages, median, game highs, volatility and configurable windows |
+| **League Leaders** | Ranking by points, rebounds, assists, made threes, PRA, minutes, steals or blocks with minimum-games filters |
+| **Game Center** | Real final scores, all player box-score lines, team and athlete filters, shooting, turnovers, steals and blocks |
+| **Team Analytics** | All 30 clubs, sample W/L, points for/against, recent results and roster scoring leaders |
+| **Data Explorer** | Search thousands of deduplicated ESPN observations by athlete, opponent and team |
+| **ML Model Audit** | Chronological training/validation/test splits, real holdout MAE, rolling baseline comparison and methodology notes |
+
+**The distinction matters:** all listed game observations are real NBA statistics. The predictive models cover **14 featured athletes with longer histories**, not every player in the 460-athlete explorer. Estimates are not guarantees, threshold frequencies are not formally calibrated probabilities, and scheduled team games do not guarantee an athlete will play.
+
+The Gradio dashboard has a custom dark research-terminal design, responsive KPI cards, and interactive Plotly charts. The public Colab notebook creates disposable ESPN-derived databases at launch. It neither includes nor connects to the author's personal Drive.
+
 **Research portfolio project** · Python · Machine Learning · ESPN-derived basketball data · Google Colab · Gradio
 
-This repository presents a source-code demonstration of an NBA data-science system. It collects game and player box scores, engineers pregame features, trains forecasting models and estimates probability thresholds. The original project was developed interactively in Google Colab. **This repository is not advertised as a reproducible one-click service or a validated production system.**
+This repository presents an interactive real-data NBA analytics portfolio alongside the original research-stage NBA system. It collects game and player box scores, engineers pregame features, trains forecasting models and estimates probability thresholds. The original project was developed interactively in Google Colab. **The public dashboard has passed a local live-ESPN and Gradio browser smoke test. The full original research workflow is not claimed to be a verified production service.**
 
 ## What the project does
 
@@ -89,7 +109,7 @@ These tests check Python source syntax, notebook syntax and output sanitation, t
 
 ## Data, privacy and limitations
 
-- No raw box scores, SQLite databases, exported CSV/Excel reports, pre-trained model binaries, private credentials or Colab execution outputs are distributed. The demo fetches real NBA game logs from ESPN at runtime and generates its own temporary SQLite database.
+- No raw box scores, SQLite databases, exported CSV/Excel reports, pre-trained model binaries, private credentials or Colab execution outputs are distributed. The demo fetches real athlete histories, league scoreboards and per-game player box scores from ESPN at runtime and creates two temporary SQLite databases.
 - Before redistribution, review ESPN/NBA data-source terms and image rights.
 - Injury reports may be incomplete or stale. Probabilities are conditional model estimates, not guarantees.
 - Historical prediction performance must be evaluated using actual *pregame* forecasts and correctly separated chronological data. There are no independently verified accuracy metrics in this public release.

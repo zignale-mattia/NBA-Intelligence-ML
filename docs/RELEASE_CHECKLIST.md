@@ -21,7 +21,14 @@
 - [x] Documented temporary sharing, dependencies, public-vs-full run modes and privacy.
 - [x] Extended local offline checks and real ESPN ingestion/model smoke tests.
 - [ ] Run new REAL public quickstart from a completely fresh Colab Python runtime.
-- [ ] Visually check real Gradio browser launch and interaction.
+- [x] Launch and visually inspect redesigned Gradio in a local Safari browser.
+- [ ] Verify every new interaction in a fresh public Google Colab browser session.
+
+- [x] Expanded the public interface to nine real-data research sections.
+- [x] Verified 180 recent completed ESPN games, 3,993 actual athlete
+      performances, 460 players and all 30 NBA teams in a live test.
+- [x] Stored the league data in a separate disposable SQLite database.
+- [x] Added ESPN league and dashboard analytics tests and interactive charts.
 
 ## Still to validate using the original Colab environment
 
