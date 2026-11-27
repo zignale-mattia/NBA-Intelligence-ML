@@ -12,6 +12,17 @@
 - [x] Excluded raw data, exported reports, model artifacts and secrets from the current tracked files.
 - [x] Documented temporary Gradio sharing and private dashboard-password setup.
 
+## Added for the public Colab demo
+
+- [x] Separate synthetic-only, fixed-seed quickstart notebook with an Open in Colab badge.
+- [x] Temporary SQLite synthetic data; no personal Drive and no private data.
+- [x] Independent regression example, chronological test split and last-ten baseline.
+- [x] Standalone optional Gradio demonstration with conspicuous synthetic-data labeling.
+- [x] Documented temporary sharing, dependencies, public-vs-full run modes and privacy.
+- [x] Extended local offline checks for the demo.
+- [ ] Run new public quickstart from a completely fresh Colab Python runtime.
+- [ ] Visually check real Gradio browser launch and interaction.
+
 ## Still to validate using the original Colab environment
 
 - [ ] Execute the full pipeline from a clean runtime on a COPY of the private data directory.

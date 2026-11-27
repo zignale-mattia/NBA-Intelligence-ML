@@ -1,0 +1,6 @@
+# Only the public Gradio demo needs these packages.
+# Pin Colab-compatible data libraries to avoid pandas 3 / NumPy 2.5 conflicts.
+# The demo ML core itself uses Python standard library only.
+numpy==2.2.6
+pandas==2.2.3
+gradio>=5.49,<6

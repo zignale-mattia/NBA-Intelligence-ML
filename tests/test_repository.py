@@ -13,7 +13,8 @@ NOTEBOOK = ROOT / "notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb"
 class RepositoryTests(unittest.TestCase):
     def test_python_files_parse(self):
         for path in [*ROOT.joinpath("src").glob("*.py"),
-                     *ROOT.joinpath("dashboard").glob("*.py")]:
+                     *ROOT.joinpath("dashboard").glob("*.py"),
+                     *ROOT.joinpath("demo").glob("*.py")]:
             with self.subTest(path=path.name):
                 ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 

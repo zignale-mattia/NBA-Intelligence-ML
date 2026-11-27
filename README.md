@@ -1,5 +1,17 @@
 # NBA Intelligence — NBA Player Forecasting & Analytics
 
+
+## Try the public interactive Colab demo
+
+[![Open Public Demo in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Intelligence_Public_Demo.ipynb)
+
+**One-click Colab notebook for recruiters:** click the badge, then **Runtime → Run all** to create a reproducible synthetic basketball database, train a transparent ridge-regression forecasting model, inspect chronological holdout results and launch a Gradio interface. No Google Drive, private credentials or original database are required. The generated temporary Gradio share link works while the Colab session remains active.
+
+**Critical distinction:** the quick demo contains **fabricated players and simulated game statistics only**. It does **not** produce real NBA forecasts or validate the original research models. For detailed prerequisites and privacy details, read [the Colab guide](docs/COLAB.md).
+
+[Open the full 14-stage research notebook in Colab](https://colab.research.google.com/github/zignale-mattia/NBA-Intelligence-ML/blob/main/notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb) — advanced, requires real-data collection and stage-by-stage execution, not one-click.
+
+
 **Research portfolio project** · Python · Machine Learning · ESPN-derived basketball data · Google Colab · Gradio
 
 This repository presents a source-code demonstration of an NBA data-science system. It collects game and player box scores, engineers pregame features, trains forecasting models and estimates probability thresholds. The original project was developed interactively in Google Colab. **This repository is not advertised as a reproducible one-click service or a validated production system.**
@@ -35,7 +47,9 @@ See [Architecture](docs/ARCHITECTURE.md) for the stage-to-file map and important
 
 | Path | Purpose |
 | --- | --- |
-| `notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb` | Curated 14-cell Google Colab workflow; execution outputs removed |
+| `notebooks/NBA_Intelligence_Public_Demo.ipynb` | Standalone public Colab demo (synthetic-only), clickable badge above |
+| `demo/` | Synthetic game generation, independent SQLite, ridge training, Gradio UI and notebook generator |
+| `notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb` | Curated 14-cell research workflow; execution outputs removed |
 | `src/` | Extracted Colab-oriented stage references and a small, testable configuration helper |
 | `dashboard/STEP_24_Dashboard_V5.py` | Original V5 Gradio dashboard source |
 | `tests/` | Fast structural and configuration tests requiring no private NBA dataset |
@@ -44,7 +58,7 @@ See [Architecture](docs/ARCHITECTURE.md) for the stage-to-file map and important
 
 **Important:** Files extracted under `src/` (apart from `project_config.py`) are **reference-stage scripts**, not independent CLI commands. Many assume Colab state, Drive data or artifacts produced by earlier stages.
 
-## Run in Google Colab
+## Run the full research workflow in Google Colab
 
 1. Open `notebooks/NBA_Data_Science_Analytics_V4_sanitized.ipynb` in Google Colab.
 2. Install the dependencies in `requirements.txt` in the Colab runtime. For example, after cloning this repository:
@@ -77,7 +91,7 @@ These tests check Python source syntax, notebook syntax and output sanitation, t
 
 ## Data, privacy and limitations
 
-- No raw box scores, SQLite databases, exported CSV/Excel reports, pre-trained model binaries, private credentials or Colab execution outputs are distributed.
+- No raw real-data box scores, SQLite databases, exported CSV/Excel reports, pre-trained model binaries, private credentials or Colab execution outputs are distributed. The public demo generates its own temporary synthetic-only SQLite data.
 - Before redistribution, review ESPN/NBA data-source terms and image rights.
 - Injury reports may be incomplete or stale. Probabilities are conditional model estimates, not guarantees.
 - Historical prediction performance must be evaluated using actual *pregame* forecasts and correctly separated chronological data. There are no independently verified accuracy metrics in this public release.

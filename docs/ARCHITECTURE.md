@@ -42,3 +42,14 @@ The original reference scripts may still contain Colab-specific paths or assume 
 - Gradio `share=True` creates a remote-accessible temporary address; login protection is not a substitute for secure hosting.
 - Probabilities should be validated against timestamped pregame predictions, with data leakage checks.
 - No end-to-end, live ESPN, or dashboard browser test was performed during this repository cleanup.
+
+## Public recruiter demo (separate architecture)
+
+The [Colab demo](COLAB.md) does **not** use any real basketball data. Its
+flow is: seeded simulated match logs → temporary SQLite table → last-five/ten
+pregame features → standard-library ridge regression → per-player temporal
+train/validation/test partitions → synthetic threshold estimates → Gradio.
+The code lives in `demo/public_demo.py`, `demo/app.py` and
+`notebooks/NBA_Intelligence_Public_Demo.ipynb`. The original research
+pipeline above remains unchanged, apart from allowing the V5 dashboard to
+respect an explicit `NBA_DATA_DIR` before checking Drive mounts.

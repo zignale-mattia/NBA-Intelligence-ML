@@ -26,20 +26,30 @@ mounts = [
     "/content/nba_drive"
 ]
 
-BASE_DIR = None
-
-for mount in mounts:
-
-    candidate = os.path.join(
-        mount, "MyDrive", "NBA_Data_Science"
+# Respect an explicit independent Colab data directory first.
+# Existing private Drive discovery remains the fallback for prior users.
+BASE_DIR = os.environ.get("NBA_DATA_DIR")
+if BASE_DIR is not None and not os.path.isfile(
+    os.path.join(BASE_DIR, "nba_database.db")
+):
+    raise FileNotFoundError(
+        "NBA_DATA_DIR does not contain nba_database.db: " + BASE_DIR
     )
 
-    if os.path.isfile(
-        os.path.join(candidate, "nba_database.db")
-    ):
+if BASE_DIR is None:
+    for mount in mounts:
 
-        BASE_DIR = candidate
-        break
+        candidate = os.path.join(
+            mount, "MyDrive", "NBA_Data_Science"
+        )
+
+        if os.path.isfile(
+            os.path.join(candidate, "nba_database.db")
+        ):
+
+            BASE_DIR = candidate
+            break
+
 
 if BASE_DIR is None:
 
